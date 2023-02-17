@@ -1,20 +1,29 @@
 # Archer
 
-| Distributed Scanning for the masses
+| Distributed Scanning for the Masses
 
-Archer is an open source distributed network and vulnerability scanner written in Golang. It supports Scan workflows which executes tools in a specific order, using results from previous steps for optimal results and scan time.
+Archer is a distributed network and vulnerability scanner written in Golang. It's original goal was to perform efficient internet wide scans. Archer was built with speed and scalability in mind. No matter how many targets you have to scan, Archer can meet your needs.
 
-Each IP address is given a single Elasticsearch document per scan, containing parsed data from all tools. This allows for easy searching and organization.
+Archer supports Scan Workflows which executes tools in a specific order, using results from previous steps for optimal results and scan time. It uses Elasticsearch scripting magic to maintain a single document per IP address per Scan, making it easy to organize and search through your results.
 
 Archer comes with a CLI tool and API to easily interact with the scanner.
 
+## Use Cases
+
+* Internet wide scans
+* Attack surface management
+* Bug bounties & penetration testing
+* Distributed fast scanning of large ranges
+
 ## Supported Tools
+
+Archer uses a module system to execute any tool seamlessly. It uses industry battle tested tools and doesn't implement custom scanning techniques.
 
 * Masscan
 * HttpX
 * Nuclei
 
-New tools can easily be added by creating new modules. If you want to see a tool included, please create a issue!
+New tools can be added by creating new modules. If you want to see a tool included, please create a issue with a link and use case!
 
 ## Workflows
 
@@ -78,13 +87,19 @@ You can monitor tasks using the Asynq Web UI at <http://localhost:8080>
 
 The CLI is currently limited to only creating new scans. To monitor scan progress, check your Postgresql database.
 
-New Scan (Specific modules with single target and multiple ports)
+Specific modules with single target and multiple ports
+
+Internet Wide Scan
+
+```sh
+./dist/archer-cli -c configs/cli.yaml new -m all -t 0.0.0.0/0 -p 80 -p 443
+```
 
 ```sh
 ./dist/archer-cli -c configs/cli.yaml new -m masscan -t 1.1.1.1 -p 80 -p 443
 ```
 
-New Scan (All modules with list)
+All modules with list
 
 ```sh
 ./dist/archer-cli -c configs/cli.yaml new -m all -l targets.txt
