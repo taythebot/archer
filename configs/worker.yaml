@@ -1,0 +1,46 @@
+id: test
+concurrency: 1
+coordinator: http://127.0.0.1:3000/v1
+modules:
+  - masscan
+  - httpx
+  - nuclei
+redis:
+  host: 127.0.0.1:6379
+  database: 0
+  heartbeat: 5
+elasticsearch:
+  hosts:
+    - https://127.0.0.1:9200
+  username: elastic
+  password: elastic
+  index: archer
+  bulk:
+    flush_bytes: 5000000
+    flush_interval: 30
+masscan:
+  binary: masscan
+  config_dir: /tmp
+  rate: 100
+  persist_config: false
+  #adapter_port: 444
+  # exclude_file: exclude.txt 
+httpx:
+  binary: /home/user/work/bin/httpx
+  config_dir: /tmp
+  persist_config: false
+  # http_proxy: http://127.0.0.1:8082
+  # socks_proxy: socks5://127.0.0.1:9050
+  # threads: 1
+  # rate_limit: 1
+nuclei:
+  binary: /home/user/work/bin/nuclei
+  config_dir: /tmp
+  persist_config: false
+  # proxies:
+    # - socks5://127.00.1:9050
+  # timeout: 10
+  # retires: 1
+  rate_limit: 150
+  bulk_size: 200
+  concurrency: 50

@@ -1,0 +1,23 @@
+id: test
+concurrency: 1
+coordinator: http://127.0.0.1:3000/v1
+postgresql:
+  host: 127.0.0.1
+  port: 5432
+  database: archer
+  username: archer
+  password: password
+redis_client:
+  host: 127.0.0.1:6379
+  database: 0
+  task_retention: 168h # 1 week
+redis_server:
+  host: 127.0.0.1:6379
+  database: 0
+  heartbeat: 5
+elasticsearch:
+  hosts:
+    - https://127.0.0.1:9200
+  username: elastic
+  password: elastic
+  index: archer

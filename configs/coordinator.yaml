@@ -1,0 +1,17 @@
+listen: 127.0.0.1:3000
+postgresql:
+  host: 127.0.0.1
+  port: 5432
+  database: archer
+  username: archer
+  password: password
+redis:
+  host: 127.0.0.1:6379
+  database: 0
+  task_retention: 168h # 1 week
+elasticsearch:
+  hosts:
+    - https://127.0.0.1:9200
+  username: elastic
+  password: elastic
+  index: archer

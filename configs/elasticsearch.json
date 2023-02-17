@@ -1,0 +1,394 @@
+{
+  "settings": {
+    "index": {
+      "number_of_shards": 2,
+      "number_of_replicas": 0
+    },
+    "analysis": {
+      "analyzer": {
+        "url_analyzer": {
+          "tokenizer": "url_tokenizer"
+        }
+      },
+      "tokenizer": {
+        "url_tokenizer": {
+          "type": "standard"
+        }
+      }
+    }
+  },
+  "mappings": {
+    "properties": {
+      "ip": {
+        "type": "ip"
+      },
+      "geoip": {
+        "properties": {
+          "asn": {
+            "type": "integer"
+          },
+          "organization": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword"
+              }
+            }
+          },
+          "continent_name": {
+            "type": "keyword"
+          },
+          "country_name": {
+            "type": "keyword"
+          },
+          "country_iso_code": {
+            "type": "keyword"
+          },
+          "city_name": {
+            "type": "keyword"
+          },
+          "location": {
+            "type": "geo_point"
+          },
+          "network": {
+            "type": "ip"
+          }
+        }
+      },
+      "ports": {
+        "type": "nested",
+        "include_in_parent": true,
+        "properties": {
+          "port": {
+            "type": "integer"
+          },
+          "metadata": {
+            "properties": {
+              "module": {
+                "type": "keyword"
+              },
+              "task": {
+                "type": "keyword"
+              },
+              "timestamp": {
+                "type": "date"
+              }
+            }
+          }
+        }
+      },
+      "http": {
+        "type": "nested",
+        "include_in_parent": true,
+        "properties": {
+          "port": {
+            "type": "integer"
+          },
+          "csp": {
+            "type": "text",
+            "analyzer": "url_analyzer",
+            "fields": {
+              "keyword": {
+                "type": "keyword"
+              }
+            }
+          },
+          "tls": {
+            "properties": {
+              "version": {
+                "type": "keyword"
+              },
+              "extension_server_name": {
+                "type": "text",
+                "analyzer": "url_analyzer",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword"
+                  }
+                }
+              },
+              "dns_names": {
+                "type": "text",
+                "analyzer": "url_analyzer",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword"
+                  }
+                }
+              },
+              "common_name": {
+                "type": "text",
+                "analyzer": "url_analyzer",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword"
+                  }
+                }
+              },
+              "organization": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword"
+                  }
+                }
+              },
+              "issuer_common_name": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword"
+                  }
+                }
+              },
+              "issuer_organization": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword"
+                  }
+                }
+              },
+              "fingerprint_sha256": {
+                "type": "keyword"
+              },
+              "fingerprint_sha256_openssl": {
+                "type": "keyword"
+              },
+              "metadata": {
+                "properties": {
+                  "scan": {
+                    "type": "keyword"
+                  },
+                  "job": {
+                    "type": "keyword"
+                  },
+                  "worker": {
+                    "type": "keyword"
+                  },
+                  "module": {
+                    "type": "keyword"
+                  }
+                }
+              }
+            }
+          },
+          "body": {
+            "type": "text",
+            "analyzer": "standard"
+          },
+          "headers": {
+            "dynamic": "true",
+            "type": "object"
+          },
+          "hashes": {
+            "properties": {
+              "body_mmh3": {
+                "type": "keyword"
+              },
+              "body_sha256": {
+                "type": "keyword"
+              },
+              "header_mmh3": {
+                "type": "keyword"
+              },
+              "header_sha256": {
+                "type": "keyword"
+              }
+            }
+          },
+          "redirects": {
+            "properties": {
+              "chains": {
+                "properties": {
+                  "status_code": {
+                    "type": "integer"
+                  },
+                  "location": {
+                    "type": "text",
+                    "analyzer": "url_analyzer",
+                    "fields": {
+                      "keyword": {
+                        "type": "keyword"
+                      }
+                    }
+                  },
+                  "request_url": {
+                    "type": "text",
+                    "analyzer": "url_analyzer",
+                    "fields": {
+                      "keyword": {
+                        "type": "keyword"
+                      }
+                    }
+                  }
+                }
+              },
+              "final_url": {
+                "type": "text",
+                "analyzer": "url_analyzer",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword"
+                  }
+                }
+              }
+            }
+          },
+          "technologies": {
+            "type": "text",
+            "analyzer": "standard",
+            "fields": {
+              "keyword": {
+                "type": "keyword"
+              }
+            }
+          },
+          "title": {
+            "type": "text",
+            "analyzer": "standard",
+            "fields": {
+              "keyword": {
+                "type": "keyword"
+              }
+            }
+          },
+          "scheme": {
+            "type": "keyword"
+          },
+          "status_code": {
+            "type": "integer"
+          },
+          "metadata": {
+            "properties": {
+              "module": {
+                "type": "keyword"
+              },
+              "task": {
+                "type": "keyword"
+              },
+              "timestamp": {
+                "type": "date"
+              }
+            }
+          }
+        }
+      },
+      "services": {
+        "type": "nested",
+        "include_in_parent": true,
+        "properties": {
+          "port": {
+            "type": "integer"
+          },
+          "banner": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword"
+              }
+            }
+          },
+          "metadata": {
+            "properties": {
+              "module": {
+                "type": "keyword"
+              },
+              "task": {
+                "type": "keyword"
+              },
+              "timestamp": {
+                "type": "date"
+              }
+            }
+          }
+        }
+      },
+      "detections": {
+        "type": "nested",
+        "include_in_parent": true,
+        "properties": {
+          "port": {
+            "type": "integer"
+          },
+          "template_id": {
+            "type": "keyword"
+          },
+          "type": {
+            "type": "keyword"
+          },
+          "extracted_results": {
+            "type": "text",
+            "analyzer": "standard",
+            "fields": {
+              "keyword": {
+                "type": "keyword"
+              }
+            }
+          },
+          "matcher_name": {
+            "type": "text",
+            "analyzer": "standard",
+            "fields": {
+              "keyword": {
+                "type": "keyword"
+              }
+            }
+          },
+          "matched_at": {
+            "type": "text",
+            "analyzer": "url_analyzer",
+            "fields": {
+              "keyword": {
+                "type": "keyword"
+              }
+            }
+          },
+          "name": {
+            "type": "text",
+            "analyzer": "standard",
+            "fields": {
+              "keyword": {
+                "type": "keyword"
+              }
+            }
+          },
+          "description": {
+            "type": "text",
+            "analyzer": "standard",
+            "fields": {
+              "keyword": {
+                "type": "keyword"
+              }
+            }
+          },
+          "severity": {
+            "type": "keyword"
+          },
+          "tags": {
+            "type": "keyword"
+          },
+          "metadata": {
+            "properties": {
+              "module": {
+                "type": "keyword"
+              },
+              "task": {
+                "type": "keyword"
+              },
+              "timestamp": {
+                "type": "date"
+              }
+            }
+          }
+        }
+      },
+      "scan": {
+        "type": "keyword"
+      },
+      "timestamp": {
+        "type": "date"
+      }
+    }
+  }
+}
