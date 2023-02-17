@@ -60,7 +60,7 @@ func New(configFile string, debug bool) (*Runner, error) {
 	for _, m := range config.Modules {
 		var valid bool
 		for _, module := range types.Modules {
-			if module == m {
+			if module.Name == m {
 				valid = true
 				break
 			}
@@ -107,7 +107,7 @@ func New(configFile string, debug bool) (*Runner, error) {
 
 	// Initialize Coordinator
 	log.Debug("Initializing Coordinator")
-	coord := coordinator.New(config.Coordinator, config.Id)
+	coord := coordinator.New(config.Coordinator, config.ID, debug)
 	if _, err := coord.Health(context.Background()); err != nil {
 		return nil, fmt.Errorf("failed to initialize Coordinator: %s", err)
 	}
@@ -124,7 +124,7 @@ func New(configFile string, debug bool) (*Runner, error) {
 
 	// Initialize Queue server
 	log.Debug("Initializing Queue server")
-	runner.Queue = queue.NewServer(config.Redis, config.Modules, config.Concurrency, config.Id, coord, debug)
+	runner.Queue = queue.NewServer(config.Redis, config.Modules, config.Concurrency, config.ID, coord, debug)
 
 	return runner, nil
 }

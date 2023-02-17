@@ -12,14 +12,14 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
+// Runner ...
 type Runner struct {
 	Config      *types.CliConfig
 	Coordinator *coordinator.Client
 }
 
 // New creates a new Runner instance
-func New(configFile string) (*Runner, error) {
-
+func New(configFile string, debug bool) (*Runner, error) {
 	// Create new YAML validator
 	y, err := yaml.New()
 	if err != nil {
@@ -40,7 +40,7 @@ func New(configFile string) (*Runner, error) {
 
 	// Initialize Coordinator
 	log.Debug("Initializing Coordinator")
-	coord := coordinator.New(config.Coordinator, "")
+	coord := coordinator.New(config.Coordinator, "", debug)
 	if _, err := coord.Health(context.Background()); err != nil {
 		return nil, fmt.Errorf("failed to initialize Coordinator: %s", err)
 	}

@@ -56,7 +56,7 @@ func New(configFile string, debug bool) (*Runner, error) {
 
 	// Initialize Coordinator
 	log.Debug("Initializing Coordinator")
-	coord := coordinator.New(config.Coordinator, config.Id)
+	coord := coordinator.New(config.Coordinator, config.ID, debug)
 	if _, err := coord.Health(context.Background()); err != nil {
 		return nil, fmt.Errorf("failed to initialize Coordinator: %s", err)
 	}
@@ -80,7 +80,7 @@ func New(configFile string, debug bool) (*Runner, error) {
 
 	// Initialize Queue server
 	log.Debug("Initializing Queue server")
-	runner.QueueServer = queue.NewServer(config.RedisServer, []string{"scheduler"}, config.Concurrency, config.Id, coord, debug)
+	runner.QueueServer = queue.NewServer(config.RedisServer, []string{"scheduler"}, config.Concurrency, config.ID, coord, debug)
 
 	// Connect to Database
 	log.Debug("Initializing Postgresql")

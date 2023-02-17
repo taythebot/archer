@@ -11,15 +11,18 @@ import (
 // runCommand is a wrapper to initialize the runner and run commands
 func runCommand(command func(commandLine archerCli.CommandLine, runner *runner.Runner) error) func(context *cli.Context) error {
 	return func(context *cli.Context) error {
-		cmd := &archerCli.ContextCommandLine{Context: context}
+		var (
+			cmd   = &archerCli.ContextCommandLine{Context: context}
+			debug = context.Bool("debug")
+		)
 
 		// Configure logger
-		if context.Bool("debug") {
+		if debug {
 			log.SetLevel(log.DebugLevel)
 		}
 
 		// Create new runner
-		r, err := runner.New(cmd.ConfigFile())
+		r, err := runner.New(cmd.ConfigFile(), debug)
 		if err != nil {
 			return err
 		}
