@@ -1,5 +1,6 @@
 package types
 
+// CoordinatorConfig ...
 type CoordinatorConfig struct {
 	Listen        string            `yaml:"listen" validate:"required"`
 	Postgresql    PostgresConfig    `yaml:"postgresql" validate:"required"`
@@ -7,8 +8,9 @@ type CoordinatorConfig struct {
 	Elasticsearch ElasticConfig     `yaml:"elasticsearch" validate:"required"`
 }
 
+// WorkerConfig ...
 type WorkerConfig struct {
-	Id            string            `yaml:"id" validate:"required,alphanum"`
+	ID            string            `yaml:"id" validate:"required,alphanum"`
 	Concurrency   int               `yaml:"concurrency" validate:"gte=0"`
 	Coordinator   string            `yaml:"coordinator" validate:"required,url"`
 	Modules       []string          `yaml:"modules" validate:"required,min=1,unique"`
@@ -19,8 +21,9 @@ type WorkerConfig struct {
 	Nuclei        *NucleiConfig     `yaml:"nuclei,omitempty"`
 }
 
+// SchedulerConfig ...
 type SchedulerConfig struct {
-	Id            string            `yaml:"id" validate:"required,alphanum"`
+	ID            string            `yaml:"id" validate:"required,alphanum"`
 	Concurrency   int               `yaml:"concurrency" validate:"gte=0"`
 	Coordinator   string            `yaml:"coordinator" validate:"required,url"`
 	Postgresql    PostgresConfig    `yaml:"postgresql" validate:"required"`
@@ -29,10 +32,12 @@ type SchedulerConfig struct {
 	Elasticsearch ElasticConfig     `yaml:"elasticsearch" validate:"required"`
 }
 
+// CliConfig ...
 type CliConfig struct {
 	Coordinator string `yaml:"coordinator" validate:"required,url"`
 }
 
+// PostgresConfig ...
 type PostgresConfig struct {
 	Host     string `yaml:"host" validate:"required"`
 	Port     int    `yaml:"port" validate:"required"`
@@ -41,6 +46,7 @@ type PostgresConfig struct {
 	Password string `yaml:"password" validate:"required"`
 }
 
+// RedisClientConfig ...
 type RedisClientConfig struct {
 	Host          string `yaml:"host" validate:"required,hostname_port"`
 	Username      string `yaml:"username,omitempty"`
@@ -49,6 +55,7 @@ type RedisClientConfig struct {
 	TaskRetention string `yaml:"task_retention,omitempty" validate:"duration"`
 }
 
+// RedisServerConfig ...
 type RedisServerConfig struct {
 	Host      string `yaml:"host" validate:"required,hostname_port"`
 	Username  string `yaml:"username,omitempty"`
@@ -57,6 +64,7 @@ type RedisServerConfig struct {
 	Heartbeat int    `yaml:"heartbeat" validate:"gt=0"`
 }
 
+// ElasticConfig ...
 type ElasticConfig struct {
 	Hosts    []string `yaml:"hosts" validate:"required,min=1,unique"`
 	Username string   `yaml:"username,omitempty"`
