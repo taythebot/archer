@@ -216,14 +216,14 @@ func (m *Module) ProcessStdout(ctx context.Context, stdout *bufio.Scanner, resul
 		// Create base http result
 		http := ResultHttp{
 			Port: port,
-			Body: parsed.ResponseBody,
+			Body: parsed.Body,
 			Hashes: ResultHttpHashes{
-				BodyMmh3:     parsed.Hashes.BodyMmh3,
-				BodySha256:   parsed.Hashes.BodySha256,
-				HeaderMmh3:   parsed.Hashes.HeaderMmh3,
-				HeaderSha256: parsed.Hashes.HeaderSha256,
+				BodyMmh3:     parsed.Hash.BodyMmh3,
+				BodySha256:   parsed.Hash.BodySha256,
+				HeaderMmh3:   parsed.Hash.HeaderMmh3,
+				HeaderSha256: parsed.Hash.HeaderSha256,
 			},
-			Technologies: parsed.Technologies,
+			Technologies: parsed.Tech,
 			Title:        parsed.Title,
 			Scheme:       parsed.Scheme,
 			StatusCode:   parsed.StatusCode,
@@ -240,13 +240,13 @@ func (m *Module) ProcessStdout(ctx context.Context, stdout *bufio.Scanner, resul
 		}
 
 		// Add Tls
-		if parsed.Tls.Version != "" {
-			http.Tls = parsed.Tls
+		if parsed.TLS.Version != "" {
+			http.Tls = parsed.TLS
 		}
 
 		// Parse and add headers
 		headers := make(map[string]string)
-		for _, v := range strings.Split(parsed.ResponseHeader, "\r\n") {
+		for _, v := range strings.Split(parsed.RawHeader, "\r\n") {
 			matches := httpHeaderRegex.FindStringSubmatch(v)
 			if len(matches) == 3 {
 				headers[strings.ToLower(matches[1])] = matches[2]
@@ -255,9 +255,9 @@ func (m *Module) ProcessStdout(ctx context.Context, stdout *bufio.Scanner, resul
 		http.Headers = headers
 
 		// Add final url
-		if parsed.FinalUrl != "" {
+		if parsed.FinalURL != "" {
 			http.Redirects = ResultHttpRedirects{
-				FinalUrl: parsed.FinalUrl,
+				FinalUrl: parsed.FinalURL,
 			}
 		}
 
@@ -265,9 +265,11 @@ func (m *Module) ProcessStdout(ctx context.Context, stdout *bufio.Scanner, resul
 		if len(parsed.Chain) > 0 {
 			for _, chain := range parsed.Chain {
 				http.Redirects.Chains = append(http.Redirects.Chains, ResultHttpRedirectsChain{
+					Request:    chain.Request,
+					Response:   chain.Response,
 					StatusCode: chain.StatusCode,
 					Location:   chain.Location,
-					RequestUrl: chain.RequestUrl,
+					RequestUrl: chain.RequestURL,
 				})
 			}
 		}

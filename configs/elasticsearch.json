@@ -95,6 +95,14 @@
           },
           "tls": {
             "properties": {
+              "cipher": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword"
+                  }
+                }
+              },
               "version": {
                 "type": "keyword"
               },
@@ -201,6 +209,14 @@
             "properties": {
               "chains": {
                 "properties": {
+                  "request": {
+                    "type": "text",
+                    "analyzer": "standard"
+                  },
+                  "response": {
+                    "type": "text",
+                    "analyzer": "standard"
+                  },
                   "status_code": {
                     "type": "integer"
                   },

@@ -34,7 +34,7 @@ type Result struct {
 type ResultHttp struct {
 	Port         int                 `json:"port"`
 	Csp          []string            `json:"csp,omitempty"`
-	Tls          Tls                 `json:"tls,omitempty"`
+	Tls          TLS                 `json:"tls,omitempty"`
 	Body         string              `json:"body,omitempty"`
 	Headers      map[string]string   `json:"headers,omitempty"`
 	Hashes       ResultHttpHashes    `json:"hashes"`
@@ -59,6 +59,8 @@ type ResultHttpRedirects struct {
 }
 
 type ResultHttpRedirectsChain struct {
+	Request    string `json:"request,omitempty"`
+	Response   string `json:"response,omitempty"`
 	StatusCode int    `json:"status_code"`
 	Location   string `json:"location"`
 	RequestUrl string `json:"request_url"`
@@ -76,36 +78,37 @@ type Output struct {
 	Csp       struct {
 		Domains []string `json:"domains"`
 	} `json:"csp,omitempty"`
-	Tls    Tls `json:"tls-grab,omitempty"`
-	Hashes struct {
-		BodyMmh3     string `json:"body-mmh3,omitempty"`
-		BodySha256   string `json:"body-sha256,omitempty"`
-		HeaderMmh3   string `json:"header-mmh3"`
-		HeaderSha256 string `json:"header-sha256"`
-	} `json:"hashes"`
-	Port   string `json:"port"`
-	Input  string `json:"input"`
-	Title  string `json:"title,omitempty"`
-	Scheme string `json:"scheme"`
-	//WebServer      string   `json:"webserver,omitempty"`
-	ResponseBody   string   `json:"response-body,omitempty"`
-	FinalUrl       string   `json:"final-url,omitempty"`
-	ResponseHeader string   `json:"response-header"`
-	Technologies   []string `json:"technologies,omitempty"`
-	Chain          []struct {
+	TLS  TLS `json:"tls,omitempty"`
+	Hash struct {
+		BodyMmh3     string `json:"body_mmh3,omitempty"`
+		BodySha256   string `json:"body_sha256,omitempty"`
+		HeaderMmh3   string `json:"header_mmh3"`
+		HeaderSha256 string `json:"header_sha256"`
+	} `json:"hash"`
+	Port      string   `json:"port"`
+	Input     string   `json:"input"`
+	Title     string   `json:"title,omitempty"`
+	Scheme    string   `json:"scheme"`
+	FinalURL  string   `json:"final-url,omitempty"`
+	RawHeader string   `json:"raw_header"`
+	Body      string   `json:"body,omitempty"`
+	Tech      []string `json:"tech,omitempty"`
+	Chain     []struct {
+		Request    string `json:"request,omitempty"`
+		Response   string `json:"response,omitempty"`
 		StatusCode int    `json:"status_code"`
 		Location   string `json:"location"`
-		RequestUrl string `json:"request-url"`
+		RequestURL string `json:"request-url"`
 	} `json:"chain,omitempty"`
-	StatusCode int `json:"status-code"`
-	//ContentLength uint   `json:"content-length,omitempty"`
+	StatusCode int `json:"status_code"`
 }
 
-// Tls from Httpx
-type Tls struct {
+// TLS from Httpx
+type TLS struct {
+	Cipher                   string   `json:"cipher"`
 	Version                  string   `json:"tls_version"`
 	ExtensionName            string   `json:"extension_name"`
-	DnsNames                 []string `json:"dns_names"`
+	DNSNames                 []string `json:"dns_names"`
 	CommonNames              []string `json:"common_names"`
 	Organization             []string `json:"organization"`
 	IssuerCommonName         []string `json:"issuer_common_name"`
