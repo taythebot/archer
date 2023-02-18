@@ -89,7 +89,7 @@ type Output struct {
 	Input     string   `json:"input"`
 	Title     string   `json:"title,omitempty"`
 	Scheme    string   `json:"scheme"`
-	FinalURL  string   `json:"final-url,omitempty"`
+	FinalURL  string   `json:"final_url,omitempty"`
 	RawHeader string   `json:"raw_header"`
 	Body      string   `json:"body,omitempty"`
 	Tech      []string `json:"tech,omitempty"`
