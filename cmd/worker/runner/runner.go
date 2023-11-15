@@ -1,83 +1,83 @@
 package runner
 
 import (
-	"context"
-	"errors"
-	"fmt"
+    "context"
+    "errors"
+    "fmt"
 
-	"github.com/taythebot/archer/internal/yaml"
-	"github.com/taythebot/archer/pkg/coordinator"
-	"github.com/taythebot/archer/pkg/elasticsearch"
-	"github.com/taythebot/archer/pkg/module/httpx"
-	"github.com/taythebot/archer/pkg/module/masscan"
-	"github.com/taythebot/archer/pkg/module/nuclei"
-	"github.com/taythebot/archer/pkg/queue"
-	taskHandler "github.com/taythebot/archer/pkg/task"
-	"github.com/taythebot/archer/pkg/types"
+    "github.com/taythebot/archer/internal/yaml"
+    "github.com/taythebot/archer/pkg/coordinator"
+    "github.com/taythebot/archer/pkg/elasticsearch"
+    "github.com/taythebot/archer/pkg/module/httpx"
+    "github.com/taythebot/archer/pkg/module/masscan"
+    "github.com/taythebot/archer/pkg/module/nuclei"
+    "github.com/taythebot/archer/pkg/queue"
+    taskHandler "github.com/taythebot/archer/pkg/task"
+    "github.com/taythebot/archer/pkg/types"
 
-	"github.com/hibiken/asynq"
-	log "github.com/sirupsen/logrus"
+    "github.com/hibiken/asynq"
+    log "github.com/sirupsen/logrus"
 )
 
 // Runner for worker
 type Runner struct {
-	Config        *types.WorkerConfig
-	Coordinator   *coordinator.Client
-	Elasticsearch *elasticsearch.Client
-	Queue         *queue.Server
-	Masscan       *masscan.Module
-	Httpx         *httpx.Module
-	Nuclei        *nuclei.Module
+    Config        *types.WorkerConfig
+    Coordinator   *coordinator.Client
+    Elasticsearch *elasticsearch.Client
+    Queue         *queue.Server
+    Masscan       *masscan.Module
+    Httpx         *httpx.Module
+    Nuclei        *nuclei.Module
 }
 
 // New creates a new Runner instance
 func New(configFile string, debug bool) (*Runner, error) {
-	config := defaultConfig()
+    config := defaultConfig()
 
-	// Create new YAML validator
-	y, err := yaml.New()
-	if err != nil {
-		return nil, fmt.Errorf("failed to create YAML validator: %s", err)
-	}
+    // Create new YAML validator
+    y, err := yaml.New()
+    if err != nil {
+        return nil, fmt.Errorf("failed to create YAML validator: %s", err)
+    }
 
-	// Parse config file
-	parsed, err := y.ValidateFile(configFile, config)
-	if err != nil {
-		log.Error(y.FormatError(err))
-		return nil, fmt.Errorf("failed to parse config file: %s", err)
-	}
+    // Parse config file
+    parsed, err := y.ValidateFile(configFile, config)
+    if err != nil {
+        log.Error(y.FormatError(err))
+        return nil, fmt.Errorf("failed to parse config file: %s", err)
+    }
 
-	// Type assertion for config
-	config, ok := parsed.(*types.WorkerConfig)
-	if !ok {
-		return nil, errors.New("failed to parse config file: types assertion failed")
-	}
+    // Type assertion for config
+    config, ok := parsed.(*types.WorkerConfig)
+    if !ok {
+        return nil, errors.New("failed to parse config file: types assertion failed")
+    }
 
-	// Create base runner
-	runner := &Runner{Config: config}
+    // Create base runner
+    runner := &Runner{Config: config}
 
-	// Validate modules
-	for _, m := range config.Modules {
-		var valid bool
-		for _, module := range types.Modules {
-			if module.Name == m {
-				valid = true
-				break
-			}
-		}
+    // Validate modules
+    for _, m := range config.Modules {
+        var valid bool
+        for _, moduleName := range types.Modules {
+            if moduleName == m {
+                valid = true
+                break
+            }
+        }
 
-		// Check if valid
-		if !valid {
-			return nil, fmt.Errorf("invalid module '%s' provided", m)
-		}
+        // Check if valid
+        if !valid {
+            return nil, fmt.Errorf("invalid module '%s' provided", m)
+        }
 
-		// Custom warning
-		if m == "masscan" && config.Concurrency > 1 {
-			log.Warn("Using more than 1 concurrency for Masscan is not recommended!")
-		}
+        // Custom warning
+        if m == "masscan" && config.Concurrency > 1 {
+            log.Warn("Using more than 1 concurrency for Masscan is not recommended!")
+        }
 
-		// Initialize module
-		switch m {
+ 		// Initialize module
+         switch m {
 		case "masscan":
 			if config.Masscan == nil {
 				return nil, errors.New("failed to initialize Masscan: config not found")
